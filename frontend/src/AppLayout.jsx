@@ -1,22 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, Outlet } from "react-router-dom"; // Import Outlet
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Home, Send, Archive } from "lucide-react";
+import { useUser } from "./context/UserContext";
 
 // Utility function to conditionally join classNames
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
-const navItems = [
-  { name: "Home", href: "/", icon: Home },
+const admin = [
+  { name: "Home", href: "/mentor", icon: Home },
   { name: "Chat", href: "/chat", icon: Send },
   { name: "Forum", href: "/forum", icon: Archive },
 ];
 
+const student = [
+  { name: "Home", href: "/student", icon: Home },
+  { name: "Chat", href: "/chat", icon: Send },
+  { name: "Forum", href: "/forum", icon: Archive },
+  { name: "Mentors", href: "/student/mentors", icon: Archive }
+]
+
 export default function AppLayout() {
   const [open, setOpen] = useState(false);
-  const location = useLocation();
+  const [navItems, setNavItems] = useState([])
+  const { user } = useUser()
+  const location = useLocation(); // Get the current location
+
+  // Check if the URL contains the word "student"
+  const isStudentRoute = location.pathname.includes("student");
+
+  useEffect(() => {
+    console.log(user)
+    if(user?.role === "student") {
+      setNavItems(student)
+    } else if(user?.role === "mentor") {
+      setNavItems(admin)
+    }
+  }, [user])
 
   const NavLinks = ({ onClick }) => (
     <nav className="space-y-2 p-4">

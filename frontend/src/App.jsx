@@ -10,12 +10,15 @@ import ForumPost from './pages/Post';
 import MentorsPage from './pages/MentorsPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import { UserProvider } from './context/UserContext';
+import Room from './utils/Room';
 import RoadmapPage from './pages/RoadmapPage';
 import Quiz from './pages/Quiz';
 
 function App() {
   return (
-      <Router>
+    <UserProvider>
+       <Router>
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
@@ -28,13 +31,17 @@ function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/forum" element={<ForumPage />} />
             <Route path="/forum-post" element={<ForumPost />} />
-            <Route path="/mentors" element={<MentorsPage />} />
+            <Route path="/student/mentors" element={<MentorsPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="*" element={<div>Not Found</div>} />
           </Route>
+
+          <Route path="/:roomId" element={<Room />} />
         </Routes>
       </Router>
+    </UserProvider>
+     
   );
 }
 

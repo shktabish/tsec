@@ -37,6 +37,12 @@ const tutoringSessionSchema = new Schema(
       enum: ['scheduled', 'completed', 'canceled'],
       default: 'scheduled',
     },
+    meetLink: {
+      type: String
+    },
+    roomId: {
+      type: String
+    }
   },
   { timestamps: true }
 );
