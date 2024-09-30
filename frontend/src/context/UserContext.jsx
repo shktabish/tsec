@@ -16,8 +16,6 @@ export const UserProvider = ({ children }) => {
 
     // Fetch the current logged-in user
     const fetchCurrentUser = async () => {
-        if(user) return
-
         try {
             const response = await api.get('/users/current-user');
             setUser(response.data.data);  // Assuming the response structure has data
@@ -32,7 +30,7 @@ export const UserProvider = ({ children }) => {
     // Fetch user details by ID
     const fetchUserById = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/v1/users/${userId}`);
+            const response = await api.get(`http://localhost:8000/api/v1/users/${userId}`);
             setUser(response.data.data);  // Set the fetched user data
         } catch (error) {
             console.error('Error fetching user by ID:', error);
