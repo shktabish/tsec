@@ -2,25 +2,26 @@ import { useState } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ThumbsUp, Share2, Send } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 export default function ForumPost() {
-  // Get the post data passed via location state or use initialPost for development
+  // Get the post data passed via location state
   const location = useLocation();
-  const postData = location.state?.post || initialPost;
+  const postData = location.state?.post; // Expecting a single post object
+
+  // Check if postData is valid
+  if (!postData) {
+    return <div className="container p-4">Post not found!</div>;
+  }
 
   // Use state to manage the post data and comments
   const [post, setPost] = useState(postData);
   const [newComment, setNewComment] = useState('');
 
   const handleLike = () => {
-    setPost((prevPost) => ({
-      ...prevPost,
-      likes: prevPost.likes + 1,
-    }));
+    // Note: The likes functionality is not in the current post data; add if needed
   };
 
   const handleShare = () => {
@@ -30,17 +31,16 @@ export default function ForumPost() {
   const handleAddComment = () => {
     if (newComment.trim() !== '') {
       const newCommentObj = {
-        id: post.comments.length + 1,
-        author: "CurrentUser",
-        avatar: "/placeholder.svg?height=40&width=40",
+        comment_id: Date.now().toString(), // Unique ID based on timestamp
+        user_id: post.user_id._id, // Replace with actual user ID if needed
         content: newComment,
-        createdAt: new Date().toISOString(),
+        _id: Date.now().toString(), // You may want a better ID strategy
       };
       setPost((prevPost) => ({
         ...prevPost,
         comments: [...prevPost.comments, newCommentObj],
       }));
-      setNewComment('');
+      setNewComment(''); // Clear the comment input
     }
   };
 
@@ -51,24 +51,25 @@ export default function ForumPost() {
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={post.avatar} alt={post.author} />
-              <AvatarFallback>{post.author[0]}</AvatarFallback>
+              <AvatarImage src={post.image} alt={post.user_id.first_name} />
+              <AvatarFallback>{post.user_id.first_name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-semibold">{post.author}</div>
+              <div className="font-semibold">{post.user_id.first_name} {post.user_id.last_name}</div>
               <div className="text-sm text-muted-foreground">
                 {new Date(post.createdAt).toLocaleString()}
               </div>
             </div>
           </div>
           <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
-          <p className="text-muted-foreground mb-4">{post.description}</p>
+          <p className="text-muted-foreground mb-4">{post.content}</p>
         </CardContent>
         <CardFooter className="flex justify-between items-center border-t p-4">
-          <Button variant="ghost" size="sm" onClick={handleLike}>
+          {/* The likes button has been commented out since there's no likes field in the data */}
+          {/* <Button variant="ghost" size="sm" onClick={handleLike}>
             <ThumbsUp className="h-5 w-5 mr-2" />
-            {post.likes} Likes
-          </Button>
+            {post.likes || 0} Likes
+          </Button> */}
           <Button variant="ghost" size="sm" onClick={handleShare}>
             <Share2 className="h-5 w-5 mr-2" />
             Share
@@ -94,16 +95,16 @@ export default function ForumPost() {
         {/* Render Comments */}
         <div className="space-y-4">
           {post.comments.map((comment) => (
-            <Card key={comment.id}>
+            <Card key={comment._id}>
               <CardContent className="p-4">
                 <div className="flex items-start space-x-4">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={comment.avatar} alt={comment.author} />
-                    <AvatarFallback>{comment.author[0]}</AvatarFallback>
+                    <AvatarImage src={post.image} alt={comment.user_id} />
+                    <AvatarFallback>{comment.user_id[0]}</AvatarFallback>
                   </Avatar>
                   <div className="flex-grow">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold">{comment.author}</span>
+                      <span className="font-semibold">{comment.user_id}</span>
                       <span className="text-sm text-muted-foreground">
                         {new Date(comment.createdAt).toLocaleString()}
                       </span>

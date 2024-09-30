@@ -11,16 +11,18 @@ export const createPost = asyncHandler(async (req, res) => {
     const { title, content, tags } = req.body;
 
     let imageLocalPath;
+    let image;
     if (req.file) {
         imageLocalPath = req.file.path;
         console.log('image local path:', imageLocalPath); // Debugging line
+        image = await uploadOnCloudinary(imageLocalPath);
     }
 
-    if (!imageLocalPath) {
-        throw new Error('No file path provided for upload.');
-    }
+    // if (!imageLocalPath) {
+    //     throw new Error('No file path provided for upload.');
+    // }
 
-    const image = await uploadOnCloudinary(imageLocalPath);
+    
 
     const post = await CommunityPost.create({
         user_id: req.user._id, // assuming user ID is obtained from the authenticated request

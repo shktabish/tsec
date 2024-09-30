@@ -10,6 +10,8 @@ import ForumPost from './pages/Post';
 import MentorsPage from './pages/MentorsPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import RoadmapPage from './pages/RoadmapPage';
+import Quiz from './pages/Quiz';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
             <Route path="/forum" element={<ForumPage />} />
             <Route path="/forum-post" element={<ForumPost />} />
             <Route path="/mentors" element={<MentorsPage />} />
+            <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/quiz" element={<Quiz />} />
             <Route path="*" element={<div>Not Found</div>} />
           </Route>
         </Routes>
