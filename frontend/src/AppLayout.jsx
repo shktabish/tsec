@@ -10,7 +10,6 @@ const cn = (...classes) => classes.filter(Boolean).join(" ");
 
 const navItems = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Schedule Meets", href: "/create-meet", icon: Inbox },
   { name: "Chat", href: "/chat", icon: Send },
   { name: "Forum", href: "/forum", icon: Archive },
 ];
