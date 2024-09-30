@@ -62,7 +62,7 @@ export default function AppLayout() {
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
       {/* Sidebar for larger screens */}
-      <aside className="hidden w-64 flex-col border-r lg:flex">
+      <aside className="w-64 flex-col border-r lg:flex">
         <div className="flex h-14 items-center border-b px-4">
           <Link to="/" className="flex items-center font-semibold">
             My App
