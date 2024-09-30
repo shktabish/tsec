@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -7,14 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarIcon, ClockIcon, PlusIcon } from "lucide-react"
-
-const initialMeetings = [
-  { id: 1, subject: "Project Kickoff", date: "2024-10-01", time: "09:00", duration: "1 hour", status: "scheduled" },
-  { id: 2, subject: "Weekly Team Sync", date: "2024-10-02", time: "10:30", duration: "30 minutes", status: "scheduled" },
-  { id: 3, subject: "Client Presentation", date: "2024-10-03", time: "14:00", duration: "2 hours", status: "scheduled" },
-  { id: 4, subject: "Budget Review", date: "2024-10-04", time: "11:00", duration: "1 hour", status: "cancelled" },
-  { id: 5, subject: "Product Demo", date: "2024-10-05", time: "15:30", duration: "45 minutes", status: "scheduled" },
-]
+import { useNavigate } from 'react-router-dom'
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -26,15 +20,47 @@ const getStatusColor = (status) => {
 }
 
 export default function MeetingSchedule() {
-  const [meetings, setMeetings] = useState(initialMeetings)
+  const [meetings, setMeetings] = useState([])  // Start with an empty array
   const [isOpen, setIsOpen] = useState(false)
   const [newMeeting, setNewMeeting] = useState({
     subject: '',
     date: '',
     time: '',
     duration: '',
-    status: 'scheduled'
+    status: 'scheduled',
+    roomLink: '',
+    roomId: '',
   })
+  const [roomId, setRoomId] = useState("");
+  const [roomLink, setRoomLink] = useState(""); // State to store the room link
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Fetch all sessions when the component mounts
+    const fetchSessions = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/v1/sessions');
+        const fetchedSessions = response.data.data; // Adjust based on your API response structure
+        const mappedSessions = fetchedSessions.map((session) => ({
+          id: session._id,  
+          subject: session.subject || "No Subject", 
+          date: session.date.split('T')[0] || "No Date", // Extracting only the date part
+          time: session.time || "No Time",          
+          duration: session.duration || "No Duration", 
+          status: session.status || "scheduled",  
+          meetLink: session.meetLink,
+          roomId: session.roomId
+        }));  
+        setMeetings(mappedSessions);
+      } catch (error) {
+        console.error('Error fetching sessions:', error);
+      }
+    };
+    
+
+    fetchSessions();
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -45,18 +71,67 @@ export default function MeetingSchedule() {
     setNewMeeting(prev => ({ ...prev, status: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleClick = () => {
+    console.log("clicked")
+    const randomId = Math.random().toString(36).substring(2, 9);
+    const timestamp = Date.now().toString().substring(-4);
+    const generatedRoomId = randomId + timestamp;
+    setRoomId(generatedRoomId);
+    
+    // Create the group call URL and store it in state
+    const generatedRoomLink = `room/${generatedRoomId}?type=group-call`;
+    console.log(generatedRoomLink)
+    setRoomLink(window.location.protocol + "//" + window.location.host + "/" + generatedRoomLink);
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const id = meetings.length > 0 ? Math.max(...meetings.map(m => m.id)) + 1 : 1
-    setMeetings(prev => [...prev, { id, ...newMeeting }])
-    setIsOpen(false)
-    setNewMeeting({
-      subject: '',
-      date: '',
-      time: '',
-      duration: '',
-      status: 'scheduled'
-    })
+    
+    // Prepare data to send to the backend
+    const sessionData = {
+      student_ids: ["66fa51d25ca9f7a55b89a682"], // Replace with actual student IDs
+      mentor_id: "66fa5bc7319cef189f4e8f1f", // Replace with actual mentor ID
+      subject: newMeeting.subject,
+      date: newMeeting.date,
+      time: newMeeting.time,
+      duration: parseInt(newMeeting.duration), // Convert to integer
+      meetLink: roomLink,
+      roomId: roomId
+    }
+
+    try {
+      // Send a POST request to create a new session
+      const response = await axios.post('http://localhost:8000/api/v1/sessions', sessionData);
+      const createdSession = response.data.data;
+
+      // Update meetings state with the new session
+      setMeetings(prev => [...prev, { ...createdSession, id: createdSession._id }]); // Use _id as id
+
+      // Reset form fields
+      setIsOpen(false);
+      setNewMeeting({
+        subject: '',
+        date: '',
+        time: '',
+        duration: '',
+        status: 'scheduled'
+      });
+    } catch (error) {
+      console.error('Error creating session:', error);
+    }
+  }
+
+  // Helper function to calculate if the meeting can be started
+  const isStartMeetDisabled = (meetingDate, meetingTime) => {
+    const meetingDateTime = new Date(`${meetingDate}T${meetingTime}`);
+    const currentTime = new Date();
+    const timeDiffInMinutes = (meetingDateTime - currentTime) / (1000 * 60); // Difference in minutes
+    return timeDiffInMinutes > 15; // Disable if more than 15 minutes
+  };
+
+  const startMeet = (meeting) => {
+    console.log(meeting)
+    navigate(`/${meeting.roomId}?type=group-call`)
   }
 
   return (
@@ -110,7 +185,7 @@ export default function MeetingSchedule() {
                 />
               </div>
               <div>
-                <Label htmlFor="duration">Duration</Label>
+                <Label htmlFor="duration">Duration (in minutes)</Label>
                 <Input
                   id="duration"
                   name="duration"
@@ -132,6 +207,10 @@ export default function MeetingSchedule() {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <div onClick={handleClick} className='border border-[#e5e5e5] rounded-lg w-max px-4 py-2 cursor-pointer hover:bg-[#000] hover:text-[white] hover:font-semibold' >Generate Link</div>
+                <a href={meetings} className='mt-2 hover:underlines' >{roomLink}</a>
+              </div>
               <Button type="submit" className="w-full">Add Meeting</Button>
             </form>
           </DialogContent>
@@ -145,7 +224,7 @@ export default function MeetingSchedule() {
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span className="text-lg">{meeting.subject}</span>
-                <Badge className={`${getStatusColor(meeting.status)}`}>
+                <Badge className={getStatusColor(meeting.status)}>
                   {meeting.status}
                 </Badge>
               </CardTitle>
@@ -157,9 +236,14 @@ export default function MeetingSchedule() {
               </div>
               <div className="flex items-center mb-2">
                 <ClockIcon className="mr-2 h-4 w-4 opacity-70" />
-                <span>{meeting.time} ({meeting.duration})</span>
+                <span>{meeting.time} ({meeting.duration} minutes)</span>
               </div>
             </CardContent>
+            <CardFooter>
+              <Button onClick={() => startMeet(meeting)} disabled={isStartMeetDisabled(meeting.date, meeting.time)}>
+                Start Meet
+              </Button>
+            </CardFooter>
           </Card>
         ))}
       </div>

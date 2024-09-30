@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 // Create a new tutoring session
 export const createSession = asyncHandler(async (req, res) => {
-    const { student_ids, mentor_id, subject, date, time, duration } = req.body;
+    const { student_ids, mentor_id, subject, date, time, duration, meetLink, roomId } = req.body;
 
     const session = await TutoringSession.create({
         session_id: `session_${Date.now()}`, // Generate a session ID (you can use a different approach)
@@ -15,6 +15,8 @@ export const createSession = asyncHandler(async (req, res) => {
         date,
         time,
         duration,
+        meetLink,
+        roomId
     });
 
     return res.status(201).json(new ApiResponse(200, session, "Tutoring session created successfully!"));

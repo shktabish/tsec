@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '@/utils/axios';
 
 // Create a context for user data
 const UserContext = createContext();
@@ -15,8 +16,10 @@ export const UserProvider = ({ children }) => {
 
     // Fetch the current logged-in user
     const fetchCurrentUser = async () => {
+        if(user) return
+
         try {
-            const response = await axios.get('http://localhost:8000/api/v1/users/current-user');
+            const response = await api.get('/users/current-user');
             setUser(response.data.data);  // Assuming the response structure has data
         } catch (error) {
             console.error('Error fetching current user:', error);
