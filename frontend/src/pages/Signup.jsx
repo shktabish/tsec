@@ -2,29 +2,54 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
-// import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import api from "@/utils/axios";
+import { toast } from "sonner";
 
-export default function Signin() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [image, setImage] = useState(null);
+  const [subjects, setSubjects] = useState(""); // Input field for subjects
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // try {
-    //   const response = await axios.post("YOUR_BACKEND_URL/register", {
-    //     email,
-    //     password,
-    //     role,
-    //   });
-    //   console.log("Registration successful:", response.data);
-    // } catch (err) {
-    //   console.error("Error during registration:", err);
-    //   setError("Registration failed. Please try again.");
-    // }
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("role", role);
+    formData.append("first_name", firstName);
+    formData.append("last_name", lastName);
+    formData.append("avatar", image);
+    formData.append("subjects", subjects.split(",").map((subject) => subject.trim())); // Convert subjects to an array
+
+    try {
+      const response = await api.post("/users/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Registration successful:", response.data);
+      toast.success("Registered successfully");
+      if(response.data.user.role === "student") {
+        navigate("/student/onboarding");
+      } else {
+        navigate("/mentor/onboarding");
+      }
+    } catch (err) {
+      console.error("Error during registration:", err);
+      setError("Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -34,12 +59,34 @@ export default function Signin() {
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold">Register</h1>
             <p className="text-balance text-muted-foreground">
-              Enter your email below to sign in to your account
+              Enter your details below to sign up
             </p>
           </div>
-          {error && <p className="text-red-500 text-center">{error}</p>} {/* Error message */}
-          <form onSubmit={handleSubmit}>
+          {error && <p className="text-red-500 text-center">{error}</p>}
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -85,6 +132,28 @@ export default function Signin() {
                   <option value="student">Student</option>
                   <option value="mentor">Mentor</option>
                 </select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="image">Profile Image</Label>
+                <input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  className="border rounded px-3 py-2"
+                  onChange={handleImageChange}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="subjects">Subjects (comma separated)</Label>
+                <Input
+                  id="subjects"
+                  type="text"
+                  placeholder="DSA, OS"
+                  required
+                  value={subjects}
+                  onChange={(e) => setSubjects(e.target.value)}
+                />
               </div>
               <Button type="submit" className="w-full">
                 Register

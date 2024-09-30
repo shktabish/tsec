@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, Outlet } from "react-router-dom"; // Import Outlet
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Home, Inbox, Send, Archive, Settings } from "lucide-react";
+import { Menu, Home, Send, Archive } from "lucide-react";
 
 // Utility function to conditionally join classNames
 const cn = (...classes) => classes.filter(Boolean).join(" ");
@@ -14,7 +14,7 @@ const navItems = [
   { name: "Forum", href: "/forum", icon: Archive },
 ];
 
-export default function AppLayout({ children }) {
+export default function AppLayout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -52,7 +52,7 @@ export default function AppLayout({ children }) {
       </aside>
 
       {/* Mobile sidebar */}
-      {/* <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="px-2 lg:hidden">
             <Menu className="h-6 w-6" />
@@ -69,7 +69,7 @@ export default function AppLayout({ children }) {
             <NavLinks onClick={() => setOpen(false)} />
           </ScrollArea>
         </SheetContent>
-      </Sheet> */}
+      </Sheet>
 
       {/* Main content */}
       <main className="flex-1 overflow-auto">
@@ -80,7 +80,9 @@ export default function AppLayout({ children }) {
           </Button>
           <div className="font-semibold">My App</div>
         </div>
-        <div className="container mx-auto p-4">{children}</div>
+        <div className="container mx-auto p-4">
+          <Outlet /> {/* Render the child routes here */}
+        </div>
       </main>
     </div>
   );

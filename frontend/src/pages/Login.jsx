@@ -2,27 +2,37 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
-// import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import api from "@/utils/axios";
+import { toast } from "sonner";
 
-export default function Signin() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // try {
-    //     const response = await axios.post("YOUR_BACKEND_URL/login", {
-    //       email,
-    //       password,
-    //     });
-    //     console.log("Login successful:", response.data);
-    //   } catch (err) {
-    //     console.error("Error during login:", err);
-    //     setError("Login failed. Please check your credentials and try again.");
-    //   }
+    try {
+        const response = await api.post("/users/login", {
+          email,
+          password,
+        });
+        console.log("Login successful:", response.data);
+        toast.success("Login successful");
+        if(response.data.user.role === "student") {
+          navigate("/student");
+        } else {
+          navigate("/mentor");
+        }
+      } catch (err) {
+        console.error("Error during login:", err);
+        setError("Login failed. Please check your credentials and try again.");
+        toast.error("Login failed. Please check your credentials and try again.");
+      }
   };
 
   return (
