@@ -5,41 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ThumbsUp, Share2, Send } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
-const initialPost = {
-  id: 1,
-  title: "The Future of Artificial Intelligence",
-  description: "Artificial Intelligence is rapidly evolving, transforming industries and our daily lives. From self-driving cars to advanced medical diagnostics, AI is pushing the boundaries of what's possible. But with great power comes great responsibility. As we continue to develop more sophisticated AI systems, we must also grapple with ethical considerations and potential societal impacts. What are your thoughts on the future of AI? How can we ensure it benefits humanity as a whole?",
-  author: "TechEnthusiast",
-  avatar: "/placeholder.svg?height=50&width=50",
-  likes: 1024,
-  comments: [
-    {
-      id: 1,
-      author: "AIResearcher",
-      avatar: "/placeholder.svg?height=40&width=40",
-      content: "Great post! I think one of the key challenges we face is ensuring AI systems are transparent and explainable, especially in critical applications like healthcare and criminal justice.",
-      createdAt: "2023-08-15T14:30:00Z"
-    },
-    {
-      id: 2,
-      author: "EthicsExpert",
-      avatar: "/placeholder.svg?height=40&width=40",
-      content: "Absolutely agree. We need to have robust ethical guidelines and regulations in place as AI becomes more prevalent in our society.",
-      createdAt: "2023-08-15T15:45:00Z"
-    }
-  ],
-  createdAt: "2023-08-15T10:00:00Z"
-};
+export default function ForumPost() {
+  // Get the post data passed via location state or use initialPost for development
+  const location = useLocation();
+  const postData = location.state?.post || initialPost;
 
-export default function SocialPostPage() {
-  const [post, setPost] = useState(initialPost);
+  // Use state to manage the post data and comments
+  const [post, setPost] = useState(postData);
   const [newComment, setNewComment] = useState('');
 
   const handleLike = () => {
-    setPost(prevPost => ({
+    setPost((prevPost) => ({
       ...prevPost,
-      likes: prevPost.likes + 1
+      likes: prevPost.likes + 1,
     }));
   };
 
@@ -54,11 +34,11 @@ export default function SocialPostPage() {
         author: "CurrentUser",
         avatar: "/placeholder.svg?height=40&width=40",
         content: newComment,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-      setPost(prevPost => ({
+      setPost((prevPost) => ({
         ...prevPost,
-        comments: [...prevPost.comments, newCommentObj]
+        comments: [...prevPost.comments, newCommentObj],
       }));
       setNewComment('');
     }
@@ -66,6 +46,7 @@ export default function SocialPostPage() {
 
   return (
     <div className="container p-4 max-w-6xl">
+      {/* Post Card */}
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
@@ -95,6 +76,7 @@ export default function SocialPostPage() {
         </CardFooter>
       </Card>
 
+      {/* Comments Section */}
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-4">Comments</h2>
         <div className="flex space-x-2 mb-4">
@@ -109,6 +91,7 @@ export default function SocialPostPage() {
             <span className="sr-only">Post comment</span>
           </Button>
         </div>
+        {/* Render Comments */}
         <div className="space-y-4">
           {post.comments.map((comment) => (
             <Card key={comment.id}>

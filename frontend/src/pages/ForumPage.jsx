@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ArrowUp, ArrowDown, MessageCircle, Share2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const initialPosts = [
   {
@@ -78,12 +79,14 @@ const initialPosts = [
   },
 ];
 
-export default function RedditLikeForum() {
+export default function ForumPage() {
   const [posts, setPosts] = useState(initialPosts);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostDescription, setNewPostDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedComments, setExpandedComments] = useState([]);
+
+  const navigate = useNavigate()
 
   const handleAddPost = () => {
     if (newPostTitle.trim() !== "" && newPostDescription.trim() !== "") {
@@ -123,6 +126,12 @@ export default function RedditLikeForum() {
     );
   };
 
+  const handleClick = (post) => {
+    console.log("clicked")
+    console.log(post)
+    navigate("/forum-post", { state: { post } });
+  }
+
   return (
     <div className="container p-4 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6">Reddit-like Forum</h1>
@@ -152,7 +161,7 @@ export default function RedditLikeForum() {
       </Dialog>
       <div className="space-y-6">
         {posts.map((post) => (
-          <Card key={post.id}>
+          <Card key={post.id} className='cursor-pointer' onClick={() => handleClick(post)}>
             <CardContent className="p-4">
               <div className="flex items-center text-sm text-muted-foreground mb-2">
                 <Avatar className="h-6 w-6 mr-2">
