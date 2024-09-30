@@ -3,15 +3,14 @@ import Message from "../models/message.models.js"
 
 export const sendMessage = async (req, res) => {
     try {
-        const { message } = req.body
+        const { message, chatId } = req.body
         const sender = req.user._id
         
         if (!message) {
             return res.status(400).json({message: "Message is required"})
         }
 
-        const chat = await Chat.findById(req.params.chatId)
-
+        const chat = await Chat.findById(chatId)
         if(!chat) {
             return res.status(404).json({message: "Chat not found"})
         }
@@ -27,8 +26,8 @@ export const sendMessage = async (req, res) => {
         }
 
         const messageSent  = await Message.findById(newMessage._id)
-        .populate("sender", "name avatar")
-        .populate("chat", "name picture users")
+        .populate("sender", "first_name last_name avatar")
+        .populate("chat", "first_name last_name picture users")
 
         await Chat.findByIdAndUpdate(req.params.chatId, {lastMessage: newMessage._id})
 

@@ -10,8 +10,8 @@ const socketUtility = (socket) => {
     })
 
     socket.on("sendMessage", (message) => {
-        const users = message.chat.users
-        const receiver = users.filter(user => user !== message.sender._id)[0]
+        const users = message.sender._id
+        const receiver = message.receiver._id
         socket.in(receiver).emit("receiveMessage", message)
         socket.emit("updateLastMessage", message.message)
     })

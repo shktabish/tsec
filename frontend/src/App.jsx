@@ -12,13 +12,15 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import { UserProvider } from './context/UserContext';
 import Room from './utils/Room';
+import RoadmapPage from './pages/RoadmapPage';
+import Quiz from './pages/Quiz';
 import Scholarship from './pages/Scholarship';
 import OnboardingForm from './pages/OnboardingForm'
 
 function App() {
   return (
     <UserProvider>
-      <Router>
+       <Router>
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
@@ -34,13 +36,16 @@ function App() {
             <Route path="/student/mentors" element={<MentorsPage />} />
             <Route path="/scholarship" element={<Scholarship />} />
             
-            {/* <Route path="*" element={<div>Not Found</div>} /> */}
+            <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="*" element={<div>Not Found</div>} />
           </Route>
           <Route path="/student/onboarding" element={<OnboardingForm />} />
           <Route path="/:roomId" element={<Room />} />
         </Routes>
       </Router>
     </UserProvider>
+     
   );
 }
 

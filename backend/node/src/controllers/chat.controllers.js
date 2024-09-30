@@ -21,7 +21,7 @@ export const createOrGetChat = async (req, res) => {
         }
 
         const userChat = await Chat.findOne({ users: { $all: [userId, receiverId] } })
-            .populate("users", "name avatar")
+            .populate("users", "first_name last_name avatar")
             .populate("lastMessage", "sender message createdAt");
 
         if (userChat) {
@@ -72,7 +72,7 @@ export const getAllChats = async (req, res) => {
         const userId = req.user._id
 
         const chats = await Chat.find({ users: userId })
-        .populate("users", "name avatar")
+        .populate("users", "first_name last_name avatar")
         .populate("lastMessage", "sender message createdAt")
 
         res.status(200).json({ chats })
