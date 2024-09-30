@@ -24,7 +24,7 @@ const student = [
 
 export default function AppLayout() {
   const [open, setOpen] = useState(false);
-  const [navItems, setNavItems] = useState(admin)
+  const [navItems, setNavItems] = useState([])
   const { user } = useUser()
   const location = useLocation(); // Get the current location
 
@@ -32,12 +32,13 @@ export default function AppLayout() {
   const isStudentRoute = location.pathname.includes("student");
 
   useEffect(() => {
-    if(user === "student") {
+    console.log(user)
+    if(user?.role === "student") {
       setNavItems(student)
-    } else {
+    } else if(user?.role === "mentor") {
       setNavItems(admin)
     }
-  })
+  }, [user])
 
   const NavLinks = ({ onClick }) => (
     <nav className="space-y-2 p-4">
