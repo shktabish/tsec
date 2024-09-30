@@ -10,11 +10,9 @@ import ForumPost from './pages/Post';
 import MentorsPage from './pages/MentorsPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import { UserProvider } from './context/UserContext';
 
 function App() {
   return (
-    <UserProvider>
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -33,7 +31,6 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </UserProvider>
   );
 }
 
