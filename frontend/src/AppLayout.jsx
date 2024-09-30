@@ -28,9 +28,6 @@ export default function AppLayout() {
   const { user } = useUser()
   const location = useLocation(); // Get the current location
 
-  // Check if the URL contains the word "student"
-  const isStudentRoute = location.pathname.includes("student");
-
   useEffect(() => {
     console.log(user)
     if(user?.role === "student") {

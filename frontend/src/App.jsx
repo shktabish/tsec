@@ -15,7 +15,7 @@ import Room from './utils/Room';
 
 function App() {
   return (
-    // <UserProvider>
+    <UserProvider>
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -36,7 +36,7 @@ function App() {
           <Route path="/:roomId" element={<Room />} />
         </Routes>
       </Router>
-    // </UserProvider>
+    </UserProvider>
   );
 }
 
