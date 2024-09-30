@@ -36,9 +36,11 @@ app.use("/api/v1/sessions", tutoringSessionRouter);
 
 import chatRouter from "./routes/chat.routes.js"
 import messageRouter from "./routes/message.routes.js"
+import mentorRouter from "./routes/mentor.routes.js"; 
 
 app.use("/api/v1/chat", chatRouter)
 app.use("/api/v1/message", messageRouter)
+app.use("/api/v1/mentors", mentorRouter);
 
 
 export {app}
