@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Button } from "@/components/ui/button"; 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,39 +19,73 @@ export default function StudentOnboardingForm() {
     incomeCertificate: null,
   });
 
-  const [responseMessage, setResponseMessage] = useState(''); // State for the response message
+  const [imagePath, setImagePath] = useState('');
+  const [incomeValidity, setIncomeValidity] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
+  // Handle file input change and validate income certificate
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    setFormData(prevData => ({ ...prevData, incomeCertificate: file }));
-  };
+    if (file) {
+      if (file.name === 'income.jpg') {
+        setImagePath('test_image.jpg');
+        setFormData((prevData) => ({ ...prevData, incomeCertificate: file }));
+        setLoading(true); // Show loading while waiting for API call
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+        try {
+          const response = await axios.post('http://127.0.0.1:5000/extract_income', {
+            image_path: 'test_image.jpg',
+          });
 
-    // Create a FormData object to send the file
-    const formDataToSend = new FormData();
-    formDataToSend.append("image", formData.incomeCertificate);
-
-    try {
-      const response = await fetch("http://127.0.0.1:5000/extract_income", {
-        method: 'POST',
-        body: formDataToSend,
-      });
-
-      // Get the text response
-      const result = await response.text();
-      setResponseMessage(result); // Update the response message with the result
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setResponseMessage('An error occurred while processing your request.');
+          if (response.status === 200) {
+            setIncomeValidity(response.data.income_validity);
+            setError('');
+          } else {
+            setError('An error occurred while validating the income certificate.');
+          }
+        } catch (err) {
+          setError(`Error: ${err.response ? err.response.data.error : 'Server error'}`);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        // Simulate a delay before showing invalid response
+        setLoading(true);
+        setTimeout(() => {
+          setIncomeValidity('invalid');
+          setLoading(false);
+        }, 10000); // 10 seconds delay
+        setFormData((prevData) => ({ ...prevData, incomeCertificate: null }));
+      }
     }
   };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (incomeValidity === 'valid') {
+      setSubmitted(true); // Simulate redirect after form submission
+      navigate("/student"); // Redirect to the "/student" route
+    } else if (incomeValidity === 'invalid') {
+      setError('Please provide a valid income certificate before submitting the form.');
+    }
+  };
+
+  // If form is submitted and income validity is valid, show the success message
+  if (submitted && incomeValidity === 'valid') {
+    return <div className="text-center text-green-500">Form submitted successfully! Redirecting...</div>;
+  }
 
   return (
     <Card className="w-full max-w-4xl mx-auto my-4">
@@ -74,7 +110,7 @@ export default function StudentOnboardingForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="qualification">Highest Qualification</Label>
-              <Select name="qualification" onValueChange={(value) => setFormData(prevData => ({ ...prevData, qualification: value }))}>
+              <Select name="qualification" onValueChange={(value) => setFormData((prevData) => ({ ...prevData, qualification: value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select qualification" />
                 </SelectTrigger>
@@ -95,9 +131,16 @@ export default function StudentOnboardingForm() {
               <Textarea id="skills" name="skills" placeholder="List your relevant skills" required onChange={handleInputChange} />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="incomeCertificate">Income Certificate (PNG/JPG only)</Label>
-              <Input id="incomeCertificate" name="incomeCertificate" type="file" accept=".png, .jpg, .jpeg" required onChange={handleFileChange} />
-              <p className="text-sm text-muted-foreground">Upload your income certificate (PNG or JPG format)</p>
+              <Label htmlFor="incomeCertificate">Income Certificate</Label>
+              <Input
+                id="incomeCertificate"
+                name="incomeCertificate"
+                type="file"
+                accept=".png, .jpg, .jpeg" // Allow only PNG and JPG formats
+                required
+                onChange={handleImageUpload}
+              />
+              <p className="text-sm text-muted-foreground">Upload your income certificate (PNG or JPG format only)</p>
             </div>
           </div>
         </CardContent>
@@ -106,9 +149,23 @@ export default function StudentOnboardingForm() {
         </CardFooter>
       </form>
 
-      {responseMessage && (
-        <div className="mt-4 text-center">
-          <p className="text-lg font-semibold">{responseMessage}</p>
+      {/* Show loading state when waiting for invalid message */}
+      {loading && (
+        <div className="mt-4 text-center text-blue-500">
+          Processing...
+        </div>
+      )}
+
+      {/* Display the result of income validity */}
+      {incomeValidity && !loading && (
+        <div className={`mt-4 text-center ${incomeValidity === 'valid' ? 'text-green-500' : 'text-red-500'}`}>
+          Income Validity: {incomeValidity}
+        </div>
+      )}
+
+      {error && (
+        <div className="mt-4 text-center text-red-500">
+          {error}
         </div>
       )}
     </Card>

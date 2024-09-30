@@ -41,10 +41,10 @@ export default function Signup() {
       });
       console.log("Registration successful:", response.data);
       toast.success("Registered successfully");
-      if(response.data.user.role === "student") {
+      if(role === "student") {
         navigate("/student/onboarding");
       } else {
-        navigate("/mentor/onboarding");
+        navigate("/login");
       }
     } catch (err) {
       console.error("Error during registration:", err);

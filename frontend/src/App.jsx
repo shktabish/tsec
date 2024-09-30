@@ -12,6 +12,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import { UserProvider } from './context/UserContext';
 import Room from './utils/Room';
+import Scholarship from './pages/Scholarship';
+import OnboardingForm from './pages/OnboardingForm'
 
 function App() {
   return (
@@ -30,9 +32,11 @@ function App() {
             <Route path="/forum" element={<ForumPage />} />
             <Route path="/forum-post" element={<ForumPost />} />
             <Route path="/student/mentors" element={<MentorsPage />} />
+            <Route path="/scholarship" element={<Scholarship />} />
+            
             {/* <Route path="*" element={<div>Not Found</div>} /> */}
           </Route>
-
+          <Route path="/student/onboarding" element={<OnboardingForm />} />
           <Route path="/:roomId" element={<Room />} />
         </Routes>
       </Router>

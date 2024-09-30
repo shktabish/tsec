@@ -3,7 +3,7 @@ import { Link, useLocation, Outlet } from "react-router-dom"; // Import Outlet
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Home, Send, Archive } from "lucide-react";
+import { Menu, Home, Send, Archive, GraduationCap } from "lucide-react";
 import { useUser } from "./context/UserContext";
 
 // Utility function to conditionally join classNames
@@ -19,7 +19,8 @@ const student = [
   { name: "Home", href: "/student", icon: Home },
   { name: "Chat", href: "/chat", icon: Send },
   { name: "Forum", href: "/forum", icon: Archive },
-  { name: "Mentors", href: "/student/mentors", icon: Archive }
+  { name: "Mentors", href: "/student/mentors", icon: Archive },
+  { name: "Scholarships", href: "/scholarship", icon: GraduationCap }
 ]
 
 export default function AppLayout() {
@@ -32,6 +33,7 @@ export default function AppLayout() {
     console.log(user)
     if(user?.role === "student") {
       setNavItems(student)
+      console.log(user._id)
     } else if(user?.role === "mentor") {
       setNavItems(admin)
     }
