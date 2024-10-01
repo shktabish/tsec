@@ -21,7 +21,8 @@ const student = [
   { name: "Forum", href: "/forum", icon: Archive },
   { name: "Mentors", href: "/student/mentors", icon: Archive },
   { name: "Roadmap", href: "/roadmap", icon: Archive },
-  { name: "Scholarships", href: "/scholarship", icon: GraduationCap }
+  { name: "Scholarships", href: "/scholarship", icon: GraduationCap },
+  { name: "ChatBot", href: "/chatbot", icon: Send },
 ]
 
 export default function AppLayout() {

@@ -85,7 +85,7 @@ export default function ForumPost() {
             placeholder="Add a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="flex-grow"
+            className="flex-grow bg-white"
           />
           <Button onClick={handleAddComment}>
             <Send className="h-4 w-4" />

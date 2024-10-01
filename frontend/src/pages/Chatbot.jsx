@@ -86,8 +86,8 @@ export default function Component() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
-      <Card className="w-full max-w-2xl bg-gray-800 text-white">
+    <div className="flex items-center justify-center h-[100vh] -mt-8 w-full overflow-hidden">
+      <Card className="w-full text-black">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Chatbot</CardTitle>
         </CardHeader>
@@ -100,7 +100,7 @@ export default function Component() {
               >
                 <div
                   className={`inline-block p-2 rounded-lg ${
-                    message.sender === "user" ? "bg-purple-600 text-white" : "bg-gray-700 text-white"
+                    message.sender === "user" ? "bg-[#0d1a42] text-white" : "bg-[#b8dcff] text-black"
                   }`}
                 >
                   {message.text}
@@ -140,7 +140,7 @@ export default function Component() {
                 placeholder="Type your message..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                className="w-full pl-12 pr-4 py-2 bg-gray-700 text-white border-gray-600 rounded-full"
+                className="h-12 w-full pl-12 pr-4 py-2 bg-[#f0f8ff] text-white border-[#e5e5e5] rounded-lg"
               />
             </div>
             <input
@@ -150,7 +150,7 @@ export default function Component() {
               ref={fileInputRef}
               className="hidden"
             />
-            <Button type="submit" size="icon" className="bg-purple-600 hover:bg-purple-700 rounded-full">
+            <Button type="submit" size="icon" className="bg-[#0d1a42] rounded-full">
               <Send className="h-4 w-4" />
               <span className="sr-only">Send</span>
             </Button>

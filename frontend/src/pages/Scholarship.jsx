@@ -86,7 +86,7 @@ function ScholarshipList() {
       <div className="grid gap-6 md:grid-cols-1">
         {filteredScholarships.length > 0 ? (
           filteredScholarships.map(scholarship => (
-            <Card key={scholarship._id} className="flex flex-col bg-gray-300">
+            <Card key={scholarship._id} className="flex flex-col bg-white">
               <CardHeader>
                 <CardTitle>{scholarship.name}</CardTitle>
               </CardHeader>
