@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker App</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let captureInterval; // Variable to store the interval ID
+        let videoStream; // Variable to store the webcam stream
+        let myChart; // Variable to store the Chart.js instance
+
+        // Automatically capture images every 20 seconds and send them to the backend for analysis
+        function startCaptureInterval() {
+            if (!captureInterval) {
+                captureInterval = setInterval(() => {
+                    captureImage();
+                }, 10000); // 20 seconds = 20000 milliseconds
+
+                console.log("Started automatic image capture.");
+            }
+        }
+
+        // Function to stop the automatic image capture and close the webcam
+        function stopCaptureInterval() {
+            if (captureInterval) {
+                clearInterval(captureInterval); // Clear the interval
+                captureInterval = null; // Reset the interval ID
+                console.log("Stopped automatic image capture.");
+            }
+
+            // Stop the video stream and close the webcam
+            if (videoStream) {
+                let tracks = videoStream.getTracks(); // Get all tracks from the video stream
+                tracks.forEach(track => track.stop()); // Stop each track (both video and audio, if present)
+                videoStream = null;
+                console.log("Webcam closed.");
+            }
+
+            const videoElement = document.querySelector('video');
+            videoElement.srcObject = null; // Remove video feed from the <video> element
+        }
+
+        // Function to capture the image from the video stream
+        function captureImage() {
+            const video = document.querySelector('video');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0);
+            const imageData = canvas.toDataURL('image/jpeg');
+            sendImageData(imageData);
+        }
+
+        // Function to send image data to the Flask backend
+        function sendImageData(imageData) {
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: imageData.split(',')[1] }) // Send only the base64 data
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data.emotion);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Function to display the emotion analysis results on the page as a bar chart
+        function displayResults(emotion) {
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+
+            // If myChart is already initialized, destroy it to create a new one
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            const emotions = Object.keys(emotion);
+            const values = Object.values(emotion);
+
+            // Create a new Chart.js bar chart
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: emotions,
+                    datasets: [{
+                        label: 'Emotion Intensity',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(74, 144, 226, 0.6)',
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(74, 144, 226, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Intensity (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Emotions'
+                            }
+                        }
+                    },
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Emotion Analysis',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to start webcam stream
+        function startWebcam() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    const video = document.querySelector('video');
+                    video.srcObject = stream;
+                    videoStream = stream; // Save the stream so we can stop it later
+                })
+                .catch(error => console.error('Error accessing webcam:', error));
+            }
+    </script>
+</head>
+<body>
+    <h1>Mood Tracker App</h1>
+    <div class="container">
+        <div class="cam">
+
+            <!-- Webcam Video Stream -->
+            <video autoplay></video>
+    
+            <!-- Button container to start and stop automatic capture -->
+            <div class="button-container">
+                <button onclick="startWebcam(); startCaptureInterval()">Start Automatic Image Capture</button>
+                <button onclick="stopCaptureInterval()">End Capture and Close Webcam</button>
+            </div>
+        </div>
+        <div class="graph">
+            <canvas id="emotionChart" width="400" height="200"></canvas>
+        </div>
+        <!-- Canvas for the emotion analysis bar chart -->
+        
+    </div>
+</body>
+</html>
