@@ -4,7 +4,7 @@ import api from '@/utils/axios';
 import { useNavigate } from 'react-router-dom';
 
 const teachersData = [
-  { id: "66fa51d25ca9f7a55b89a682", name: 'Mentor Doe', role: 'Teacher', skills: ['Python', 'C++'], hourRate: 24, experience: 18 },
+  { id: "66fa7e6a5425f590f5a9cdd7", name: 'Mentor Doe', role: 'Teacher', skills: ['Python', 'C++'], hourRate: 24, experience: 18 },
   { id: 1, name: 'John Peterson', role: 'DevOps', skills: ['Python', 'C++'], hourRate: 24, experience: 15 },
   { id: 2, name: 'Elevan Georgi', role: 'Data Analyst', skills: ['Python', 'JavaScript'], hourRate: 19, experience: 6 },
   { id: 3, name: 'Jeff Sinister', role: 'Consultant', skills: ['Python', 'Swift'], hourRate: 14, experience: 4 },
