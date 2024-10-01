@@ -16,6 +16,7 @@ import RoadmapPage from './pages/RoadmapPage';
 import Quiz from './pages/Quiz';
 import Scholarship from './pages/Scholarship';
 import OnboardingForm from './pages/OnboardingForm'
+import Chatbot from './pages/Chatbot';
 
 function App() {
   return (
@@ -35,13 +36,14 @@ function App() {
             <Route path="/forum-post" element={<ForumPost />} />
             <Route path="/student/mentors" element={<MentorsPage />} />
             <Route path="/scholarship" element={<Scholarship />} />
-            
+            <Route path="/chatbot" element={<Chatbot />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="*" element={<div>Not Found</div>} />
           </Route>
           <Route path="/student/onboarding" element={<OnboardingForm />} />
           <Route path="/:roomId" element={<Room />} />
+
         </Routes>
       </Router>
     </UserProvider>
