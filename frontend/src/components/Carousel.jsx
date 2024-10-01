@@ -2,58 +2,41 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, ClockIcon, PlusIcon } from "lucide-react"
-
-// Example meeting data
-const meetings = [
-  {
-    id: 1,
-    subject: "Project Kickoff",
-    status: "Scheduled",
-    date: "2024-10-01",
-    time: "10:00 AM",
-    duration: "1h",
-  },
-  {
-    id: 2,
-    subject: "Design Review",
-    status: "Completed",
-    date: "2024-09-28",
-    time: "2:00 PM",
-    duration: "30m",
-  },
-  {
-    id: 3,
-    subject: "Sprint Planning",
-    status: "In Progress",
-    date: "2024-09-30",
-    time: "3:00 PM",
-    duration: "1h 30m",
-  },
-  {
-    id: 4,
-    subject: "Retrospective",
-    status: "Scheduled",
-    date: "2024-10-05",
-    time: "11:00 AM",
-    duration: "45m",
-  },
-];
+import { useEffect, useState } from "react";
+import api from "@/utils/axios";
+import { Link } from 'react-router-dom';
 
 // Helper function to assign color classes based on status
 const getStatusColor = (status) => {
   switch (status) {
     case "Scheduled":
-      return "bg-blue-500 text-white";
+      return "bg-[#021b31] text-white";
     case "Completed":
       return "bg-green-500 text-white";
     case "In Progress":
       return "bg-yellow-500 text-white";
     default:
-      return "bg-gray-500 text-white";
+      return "bg-[#0d1a42] text-white";
   }
 };
 
 export default function MeetsCarousel() {
+  const [meetings, setMeetings] = useState([]);
+
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      const response = await api.get("/sessions")
+      console.log(response.data.data) 
+      setMeetings(response.data.data)
+    }
+
+    fetchMeetings();
+  }, []);
+
+  const handleClick = (link) => {
+    window.open("http://localhost:5173/" + link + "?type=group-call", '_blank');
+  }
+
   return (
     <div className="h-full flex flex-col justify-around" >
         <div className="text-2xl font-semibold" >Upcoming Mentor Meets</div>
@@ -66,19 +49,22 @@ export default function MeetsCarousel() {
                     <CardHeader>
                     <CardTitle className="flex justify-between items-center">
                         <span className="text-lg">{meeting.subject}</span>
-                        <Badge className={`${getStatusColor(meeting.status)}`}>
+                        <Badge className={`${getStatusColor(meeting.status)} py-1`}>
                         {meeting.status}
                         </Badge>
                     </CardTitle>
                     </CardHeader>
                     <CardContent>
+                    <div>
                     <div className="flex items-center mb-2">
                         <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
-                        <span>{meeting.date}</span>
+                        <span>{meeting.date.split('T')[0]}</span>
                     </div>
                     <div className="flex items-center mb-2">
                         <ClockIcon className="mr-2 h-4 w-4 opacity-70" />
                         <span>{meeting.time} ({meeting.duration})</span>
+                    </div>
+                    <div onClick={() => handleClick(meeting.roomId)} className="font-semibold cursor-pointer" >Join Meet</div>
                     </div>
                     </CardContent>
                 </Card>

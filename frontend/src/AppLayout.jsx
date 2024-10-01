@@ -20,6 +20,7 @@ const student = [
   { name: "Chat", href: "/chat", icon: Send },
   { name: "Forum", href: "/forum", icon: Archive },
   { name: "Mentors", href: "/student/mentors", icon: Archive },
+  { name: "Roadmap", href: "/roadmap", icon: Archive },
   { name: "Scholarships", href: "/scholarship", icon: GraduationCap }
 ]
 
@@ -40,7 +41,7 @@ export default function AppLayout() {
   }, [user])
 
   const NavLinks = ({ onClick }) => (
-    <nav className="space-y-2 p-4">
+    <nav className="space-y-2 p-4 h-[calc(100vh-56px)] bg-[#0D1A42]">
       {navItems.map((item) => (
         <Link
           key={item.href}
@@ -62,8 +63,8 @@ export default function AppLayout() {
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
       {/* Sidebar for larger screens */}
       <aside className="w-64 flex-col border-r lg:flex">
-        <div className="flex h-14 items-center border-b px-4">
-          <Link to="/" className="flex items-center font-semibold">
+        <div className="flex h-14 items-center px-4 bg-[#0d1a42]">
+          <Link to="/" className="flex items-center font-semibold text-white">
             My App
           </Link>
         </div>

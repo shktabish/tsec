@@ -17,12 +17,12 @@ import {
 export const description = "A horizontal bar chart"
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
+  { month: "May", desktop: 186 },
   { month: "June", desktop: 214 },
+  { month: "July", desktop: 169 },
+  { month: "August", desktop: 204 },
+  { month: "September", desktop: 132 },
+  { month: "October", desktop: 165 },
 ]
 
 const chartConfig = {
@@ -36,8 +36,8 @@ export function ContributionChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart - Horizontal</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle className="text-md font-semibold" >Community Engagement Contributions</CardTitle>
+        <CardDescription>May - October 2024</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

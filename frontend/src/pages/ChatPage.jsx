@@ -112,7 +112,7 @@ export default function ChatPage() {
   }, [messages])
 
   return (
-    <div className="container mx-auto p-4 h-screen flex">
+    <div className="container mx-auto p-4 h-[95vh] flex overflow-y-clip">
       <Card className="flex-1">
         <CardHeader>
           <CardTitle>{selectedStudent ? `Chat with ${selectedStudent?.name}` : 'No students to chat with'}</CardTitle>
@@ -124,7 +124,7 @@ export default function ChatPage() {
                 key={index}
                 className={`mb-4 ${message?.senderId === user?._id ? 'text-right' : 'text-left'}`} // Optional chaining for message sender ID
               >
-                <div className={`inline-block p-2 rounded-lg ${message?.senderId === user?._id ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                <div className={`inline-block p-2 rounded-lg ${message?.senderId === user?._id ? 'bg-[#0d1a42] text-white' : 'bg-muted'}`}>
                   {message?.message}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">{message?.timestamp}</div> {/* Optional chaining for timestamp */}
@@ -151,7 +151,7 @@ export default function ChatPage() {
 
       <Card className="w-1/3 ml-4">
         <CardHeader>
-          <CardTitle>Connected Students</CardTitle>
+          <CardTitle>{`Connected ${user?.role === "student" ? "Mentors" : "Students" }`}</CardTitle>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[calc(100vh-8rem)]">
@@ -166,7 +166,7 @@ export default function ChatPage() {
                 <div key={chat?._id} className="mb-4"> {/* Optional chaining for chat ID */}
                   <Button
                     variant="ghost"
-                    className="w-full justify-start"
+                    className="w-full justify-start py-8"
                     onClick={() => handleStudentSelect({
                       id: chat?._id, // Optional chaining for chat ID
                       name: `${otherUser?.first_name} ${otherUser?.last_name}`, // Optional chaining for user name

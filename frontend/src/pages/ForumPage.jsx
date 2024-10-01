@@ -96,10 +96,9 @@ export default function ForumPage() {
 
   return (
     <div className="container p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Reddit-like Forum</h1>
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen} >
         <DialogTrigger asChild>
-          <Button className="mb-6">Create New Post</Button>
+          <Button className="mb-6 hover:bg-[#0a5399]">Create New Post</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -107,34 +106,37 @@ export default function ForumPage() {
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <Input
+              className="bg-white"
               type="text"
               placeholder="Post title"
               value={newPostTitle}
               onChange={(e) => setNewPostTitle(e.target.value)}
             />
             <Textarea
+              className="bg-white"
               placeholder="Post description"
               value={newPostDescription}
               onChange={(e) => setNewPostDescription(e.target.value)}
             />
             <Input
+              className="bg-white"
               type="text"
               placeholder="Tags (comma-separated)"
               value={newPostTags}
               onChange={(e) => setNewPostTags(e.target.value)}
             />
-            <Button onClick={handleAddPost}>Submit Post</Button>
+            <Button className="hover:bg-[#0a5399]" onClick={handleAddPost}>Submit Post</Button>
           </div>
         </DialogContent>
       </Dialog>
       <div className="space-y-6">
         {posts.map((post) => (
-          <Card key={post._id} className='cursor-pointer' onClick={() => handleClick(post)}>
+          <Card key={post._id} className='cursor-pointer overflow-hidden' onClick={() => handleClick(post)}>
             <CardContent className="p-4">
               <div className="flex items-center text-sm text-muted-foreground mb-2">
                 <Avatar className="h-6 w-6 mr-2">
                   <AvatarImage src={post.user_id.avatar || "/placeholder.svg"} alt={post.user_id.first_name} />
-                  <AvatarFallback>{post.user_id.first_name[0]}</AvatarFallback>
+                  <AvatarFallback className="bg-[hsl(210,100%,96%)]">{post.user_id.first_name[0]}</AvatarFallback>
                 </Avatar>
                 <span>Posted by u/{post.user_id.first_name + " " + post.user_id.last_name}</span>
                 <span className="mx-1">•</span>
@@ -144,13 +146,13 @@ export default function ForumPage() {
               <p className="text-muted-foreground mb-4">{post.content}</p>
               <div className="text-sm text-muted-foreground">
                 {post.tags.map((tag, index) => (
-                  <span key={index} className="mr-2 px-2 py-1 bg-gray-200 rounded-full text-gray-700">
+                  <span key={index} className="mr-2 px-3 py-1 font-semibold bg-[hsl(210,100%,96%)] rounded-full text-black">
                     {tag}
                   </span>
                 ))}
               </div>
             </CardContent>
-            <CardFooter className="px-4 py-2 bg-muted flex justify-between items-center">
+            <CardFooter className="px-4 py-2 bg-[#0D1A42] text-white flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"

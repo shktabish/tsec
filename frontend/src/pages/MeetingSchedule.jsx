@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'scheduled': return 'bg-blue-500 hover:bg-blue-600'
+    case 'scheduled': return 'bg-[#f0f8ff] text-black py-1 px-3'
     case 'completed': return 'bg-green-500 hover:bg-green-600'
     case 'cancelled': return 'bg-red-500 hover:bg-red-600'
     default: return 'bg-gray-500 hover:bg-gray-600'
@@ -155,6 +155,7 @@ export default function MeetingSchedule() {
               <div>
                 <Label htmlFor="subject">Subject</Label>
                 <Input
+                  className="bg-white"
                   id="subject"
                   name="subject"
                   value={newMeeting.subject}
@@ -165,6 +166,7 @@ export default function MeetingSchedule() {
               <div>
                 <Label htmlFor="date">Date</Label>
                 <Input
+                  className="bg-white"
                   id="date"
                   name="date"
                   type="date"
@@ -176,6 +178,7 @@ export default function MeetingSchedule() {
               <div>
                 <Label htmlFor="time">Time</Label>
                 <Input
+                  className="bg-white"
                   id="time"
                   name="time"
                   type="time"
@@ -187,6 +190,7 @@ export default function MeetingSchedule() {
               <div>
                 <Label htmlFor="duration">Duration (in minutes)</Label>
                 <Input
+                  className="bg-white"
                   id="duration"
                   name="duration"
                   value={newMeeting.duration}
@@ -196,9 +200,9 @@ export default function MeetingSchedule() {
               </div>
               <div>
                 <Label htmlFor="status">Status</Label>
-                <Select onValueChange={handleSelectChange} defaultValue={newMeeting.status}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                <Select onValueChange={handleSelectChange} defaultValue={newMeeting.status} className="bg-white" >
+                  <SelectTrigger className="bg-white" >
+                    <SelectValue placeholder="Select status" className='bg-white' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="scheduled">Scheduled</SelectItem>
@@ -208,7 +212,7 @@ export default function MeetingSchedule() {
                 </Select>
               </div>
               <div>
-                <div onClick={handleClick} className='border border-[#e5e5e5] rounded-lg w-max px-4 py-2 cursor-pointer hover:bg-[#000] hover:text-[white] hover:font-semibold' >Generate Link</div>
+                <div onClick={handleClick} className='border border-[#e5e5e5] rounded-lg w-max px-4 py-2 cursor-pointer hover:border-[#0a5399] font-semibold' >Generate Link</div>
                 <a href={meetings} className='mt-2 hover:underlines' >{roomLink}</a>
               </div>
               <Button type="submit" className="w-full">Add Meeting</Button>

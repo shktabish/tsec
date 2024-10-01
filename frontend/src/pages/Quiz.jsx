@@ -21,6 +21,7 @@ const Quiz = () => {
   
       let quizText = response.data.quiz;
       quizText = quizText.replace(/```/g, ''); // Removes any unnecessary backticks
+      console.log(quizText);
       const parsedQuizData = JSON.parse(quizText); // Parsing the JSON string
   
       setQuizData(parsedQuizData); // Store parsed quiz data in state

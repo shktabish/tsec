@@ -17,12 +17,15 @@ import {
 export const description = "A simple area chart"
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", desktop: 10 },
+  { month: "February", desktop: 45 },
+  { month: "March", desktop: 26 },
+  { month: "April", desktop: 24 },
+  { month: "May", desktop: 18 },
+  { month: "June", desktop: 10 },
+  { month: "July", desktop: 29 },
+  { month: "August", desktop: 35 },
+  { month: "September", desktop: 19 },
 ]
 
 const chartConfig = {
@@ -36,9 +39,9 @@ export function TimeSpentChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart</CardTitle>
+        <CardTitle>Academic Engagement Time</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing total hours for the last 6 months
         </CardDescription>
       </CardHeader>
       <CardContent>
