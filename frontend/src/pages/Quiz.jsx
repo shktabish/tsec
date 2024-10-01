@@ -15,8 +15,8 @@ const Quiz = () => {
   // Fetch quiz data from the Flask backend
   const fetchQuizData = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:5000/generate-quiz', {
-        skills: skills.join(', '),
+      const response = await axios.post('http://127.0.0.1:5001/generate-quiz', {
+        skills: "Node.js, Express.js,React.js",
       });
   
       let quizText = response.data.quiz;
