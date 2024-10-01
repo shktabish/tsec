@@ -66,7 +66,7 @@ export default function AppLayout() {
       <aside className="w-64 flex-col border-r lg:flex">
         <div className="flex h-14 items-center px-4 bg-[#0d1a42]">
           <Link to="/" className="flex items-center font-semibold text-white">
-            My App
+            AspireEd
           </Link>
         </div>
         <ScrollArea className="flex-1">
@@ -85,7 +85,7 @@ export default function AppLayout() {
         <SheetContent side="left" className="w-64 p-0">
           <div className="flex h-14 items-center border-b px-4">
             <Link to="/" className="flex items-center font-semibold" onClick={() => setOpen(false)}>
-              My App
+              AspireEd
             </Link>
           </div>
           <ScrollArea className="flex-1">
@@ -101,7 +101,7 @@ export default function AppLayout() {
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
-          <div className="font-semibold">My App</div>
+          <div className="font-semibold">AspireEd</div>
         </div>
         <div className="container mx-auto p-4">
           <Outlet /> {/* Render the child routes here */}

@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarIcon, ClockIcon, PlusIcon } from "lucide-react"
 import { useNavigate } from 'react-router-dom'
+import api from '@/utils/axios'
+import { toast } from 'sonner'
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -116,6 +118,15 @@ export default function MeetingSchedule() {
         duration: '',
         status: 'scheduled'
       });
+
+      const response2 = await api.post('/send-email', {
+        meetLink: roomLink,
+        subject: newMeeting.subject,
+        date: newMeeting.date,
+        time: newMeeting.time,
+      })
+
+      toast.success('Meeting link sent successfully!');
     } catch (error) {
       console.error('Error creating session:', error);
     }

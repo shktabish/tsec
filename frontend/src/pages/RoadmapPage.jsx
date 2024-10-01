@@ -67,7 +67,7 @@ export default function RoadmapPage() {
     <div className="min-h-screen bg-gray-100 p-8">
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Individuals Roadmap</h1>
       <div className='w-[70%] mx-auto text-center text-gray-600 mb-12'>
-        My App is a community effort to create roadmaps, guides and other educational content to help guide developers in picking up a path and guide their learnings.
+        AspireEd is a community effort to create roadmaps, guides and other educational content to help guide developers in picking up a path and guide their learnings.
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
         {roadmapData.map((item) => (
